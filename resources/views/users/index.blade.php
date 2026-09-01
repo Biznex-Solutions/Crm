@@ -133,13 +133,20 @@
                         <td class="text-sm" style="color:var(--text-300);">{{ $user->phone ?? '—' }}</td>
                         <td class="text-sm">
                             <div style="font-weight:600; color:var(--text-200);">{{ $user->designation ?? '—' }}</div>
-                            @if($user->isEmployee() && $user->categoryTarget)
-                                <div style="margin-top:4px;">
-                                    <span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; color:var(--accent); background:var(--accent-soft); padding:2px 8px; border-radius:12px; border:1px solid #C7D2FE;" title="Assigned Target Category">
-                                        <i class="fa-solid fa-layer-group" style="font-size:9px;"></i>
-                                        {{ $user->categoryTarget->name }}
-                                    </span>
-                                </div>
+                            @if($user->isEmployee())
+                                @php
+                                    $cats = $user->categoryTargets->isNotEmpty() ? $user->categoryTargets : ($user->categoryTarget ? collect([$user->categoryTarget]) : collect());
+                                @endphp
+                                @if($cats->isNotEmpty())
+                                    <div style="margin-top:4px; display:flex; flex-wrap:wrap; gap:4px;">
+                                        @foreach($cats as $c)
+                                            <span style="display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:600; color:var(--accent); background:var(--accent-soft); padding:2px 7px; border-radius:12px; border:1px solid #C7D2FE;" title="Assigned Target Category: {{ $c->name }}">
+                                                <i class="fa-solid fa-layer-group" style="font-size:8px;"></i>
+                                                {{ $c->name }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @endif
                             @endif
                         </td>
                         <td class="text-sm text-muted">{{ $user->created_at->format('M d, Y') }}</td>

@@ -123,6 +123,11 @@
         margin-top: 2px;
     }
 
+    .cat-check-item:hover {
+        border-color: var(--accent) !important;
+        background: var(--accent-soft) !important;
+    }
+
     .error-msg {
         color: var(--danger);
         font-size: 12px;
@@ -144,7 +149,7 @@
     <div class="form-header-title">
         <div>
             <h2><i class="fa-solid fa-pen-to-square" style="color: var(--accent); margin-right: 8px;"></i> Edit User: {{ $user->name }}</h2>
-            <p>Update user details, role privileges, assigned category target, or active/inactive status.</p>
+            <p>Update user details, role privileges, assigned category targets, or active/inactive status.</p>
         </div>
         <a href="{{ route('users.index') }}" class="btn btn-secondary" style="padding: 8px 14px; font-size: 13px;">
             <i class="fa-solid fa-arrow-left"></i>
@@ -206,7 +211,7 @@
                         <input type="radio" name="role" value="employee" {{ old('role', $user->role) == 'employee' ? 'checked' : '' }} required>
                         <div class="role-info">
                             <div class="title"><i class="fa-solid fa-user-tie" style="color: #2563EB; margin-right: 6px;"></i> Employee Role</div>
-                            <div class="desc">Standard staff member privileges & assigned category target</div>
+                            <div class="desc">Standard staff member privileges & assigned category targets</div>
                         </div>
                     </label>
 
@@ -221,24 +226,41 @@
                 @error('role') <span class="error-msg">{{ $message }}</span> @enderror
             </div>
 
-            <!-- Target Category Selection for Employee -->
+            <!-- Multiple Target Categories Selection for Employee -->
+            @php
+                $assignedIds = old('category_target_ids', $user->categoryTargets->pluck('id')->toArray());
+            @endphp
             <div class="form-group full-width" id="categoryTargetWrapper" style="{{ old('role', $user->role) === 'admin' ? 'display:none;' : '' }}">
-                <label class="form-label" for="category_target_id">
-                    <i class="fa-solid fa-layer-group" style="color: var(--accent); margin-right: 4px;"></i>
-                    Assigned Target Category <span style="font-weight: 500; color: var(--text-300);">(Employee Lead Category)</span>
-                </label>
-                <select id="category_target_id" name="category_target_id" class="form-select">
-                    <option value="">-- No Specific Category (Can access all active categories) --</option>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                    <label class="form-label" style="margin-bottom: 0;">
+                        <i class="fa-solid fa-layer-group" style="color: var(--accent); margin-right: 4px;"></i>
+                        Assigned Target Categories <span style="font-weight: 500; color: var(--text-300);">(Select multiple)</span>
+                    </label>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" class="btn btn-xs btn-secondary" onclick="toggleAllCategories(true)">
+                            <i class="fa-solid fa-check-double"></i> Select All
+                        </button>
+                        <button type="button" class="btn btn-xs btn-secondary" onclick="toggleAllCategories(false)">
+                            <i class="fa-solid fa-xmark"></i> Clear All
+                        </button>
+                    </div>
+                </div>
+
+                <div class="category-checkbox-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; max-height: 260px; overflow-y: auto; padding: 12px; background: #FAFBFF; border: 1.5px solid var(--border); border-radius: 14px;">
                     @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ old('category_target_id', $user->category_target_id) == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }} (Target: {{ $category->target_deals }} deals)
-                        </option>
+                        <label class="cat-check-item" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #FFFFFF; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.15s;">
+                            <input type="checkbox" name="category_target_ids[]" value="{{ $category->id }}" class="cat-checkbox" {{ in_array($category->id, $assignedIds) ? 'checked' : '' }} style="accent-color: var(--accent); width: 16px; height: 16px; flex-shrink: 0;">
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="font-size: 13px; font-weight: 600; color: var(--text-100); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $category->name }}</div>
+                                <div style="font-size: 11px; color: var(--text-300);">Target: {{ $category->target_deals }} deals</div>
+                            </div>
+                        </label>
                     @endforeach
-                </select>
+                </div>
                 <span style="font-size: 12px; color: var(--text-300); margin-top: 4px; display: flex; align-items: center; gap: 6px;">
-                    <i class="fa-solid fa-circle-info" style="color: var(--accent);"></i> When this employee creates leads, only this assigned target category will be available to them.
+                    <i class="fa-solid fa-circle-info" style="color: var(--accent);"></i> When this employee creates leads, they will be restricted to the selected target categories.
                 </span>
-                @error('category_target_id') <span class="error-msg">{{ $message }}</span> @enderror
+                @error('category_target_ids') <span class="error-msg">{{ $message }}</span> @enderror
             </div>
 
             <!-- Account Status -->
@@ -278,6 +300,10 @@
                 categoryWrapper.style.display = 'none';
             }
         }
+    }
+
+    function toggleAllCategories(check) {
+        document.querySelectorAll('.cat-checkbox').forEach(cb => cb.checked = check);
     }
 </script>
 @endsection

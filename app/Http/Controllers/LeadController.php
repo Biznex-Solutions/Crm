@@ -76,8 +76,15 @@ class LeadController extends Controller
         $currentUser = Auth::user();
         $sources = LeadSource::where('status', 'active')->orderBy('name')->get();
 
-        if ($currentUser->isEmployee() && $currentUser->category_target_id) {
-            $categories = CategoryTarget::where('id', $currentUser->category_target_id)->get();
+        if ($currentUser->isEmployee()) {
+            $assigned = $currentUser->categoryTargets()->where('status', 'active')->orderBy('name')->get();
+            if ($assigned->isNotEmpty()) {
+                $categories = $assigned;
+            } elseif ($currentUser->category_target_id) {
+                $categories = CategoryTarget::where('id', $currentUser->category_target_id)->get();
+            } else {
+                $categories = CategoryTarget::where('status', 'active')->orderBy('name')->get();
+            }
         } else {
             $categories = CategoryTarget::where('status', 'active')->orderBy('name')->get();
         }
@@ -89,8 +96,15 @@ class LeadController extends Controller
     {
         $currentUser = Auth::user();
 
-        if ($currentUser->isEmployee() && $currentUser->category_target_id) {
-            $request->merge(['category_target_id' => $currentUser->category_target_id]);
+        if ($currentUser->isEmployee()) {
+            $assignedIds = $currentUser->categoryTargets()->pluck('category_targets.id')->toArray();
+            if (empty($assignedIds) && $currentUser->category_target_id) {
+                $assignedIds = [$currentUser->category_target_id];
+            }
+
+            if (count($assignedIds) === 1 && !$request->filled('category_target_id')) {
+                $request->merge(['category_target_id' => $assignedIds[0]]);
+            }
         }
 
         $validated = $request->validate([
@@ -99,7 +113,21 @@ class LeadController extends Controller
             'email' => ['nullable', 'email', 'max:255'],
             'whatsapp' => ['nullable', 'string', 'max:50'],
             'lead_source_id' => ['required', 'exists:lead_sources,id'],
-            'category_target_id' => ['required', 'exists:category_targets,id'],
+            'category_target_id' => [
+                'required',
+                'exists:category_targets,id',
+                function ($attribute, $value, $fail) use ($currentUser) {
+                    if ($currentUser->isEmployee()) {
+                        $assignedIds = $currentUser->categoryTargets()->pluck('category_targets.id')->toArray();
+                        if (empty($assignedIds) && $currentUser->category_target_id) {
+                            $assignedIds = [$currentUser->category_target_id];
+                        }
+                        if (!empty($assignedIds) && !in_array($value, $assignedIds)) {
+                            $fail('The selected target category is not assigned to your profile.');
+                        }
+                    }
+                }
+            ],
             'notes' => ['nullable', 'string'],
         ]);
 
@@ -154,8 +182,15 @@ class LeadController extends Controller
 
         $sources = LeadSource::where('status', 'active')->orderBy('name')->get();
 
-        if ($currentUser->isEmployee() && $currentUser->category_target_id) {
-            $categories = CategoryTarget::where('id', $currentUser->category_target_id)->get();
+        if ($currentUser->isEmployee()) {
+            $assigned = $currentUser->categoryTargets()->where('status', 'active')->orderBy('name')->get();
+            if ($assigned->isNotEmpty()) {
+                $categories = $assigned;
+            } elseif ($currentUser->category_target_id) {
+                $categories = CategoryTarget::where('id', $currentUser->category_target_id)->get();
+            } else {
+                $categories = CategoryTarget::where('status', 'active')->orderBy('name')->get();
+            }
         } else {
             $categories = CategoryTarget::where('status', 'active')->orderBy('name')->get();
         }
@@ -168,17 +203,27 @@ class LeadController extends Controller
         $this->authorizeLeadAccess($lead);
         $currentUser = Auth::user();
 
-        if ($currentUser->isEmployee() && $currentUser->category_target_id) {
-            $request->merge(['category_target_id' => $currentUser->category_target_id]);
-        }
-
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:50'],
             'email' => ['nullable', 'email', 'max:255'],
             'whatsapp' => ['nullable', 'string', 'max:50'],
             'lead_source_id' => ['required', 'exists:lead_sources,id'],
-            'category_target_id' => ['required', 'exists:category_targets,id'],
+            'category_target_id' => [
+                'required',
+                'exists:category_targets,id',
+                function ($attribute, $value, $fail) use ($currentUser) {
+                    if ($currentUser->isEmployee()) {
+                        $assignedIds = $currentUser->categoryTargets()->pluck('category_targets.id')->toArray();
+                        if (empty($assignedIds) && $currentUser->category_target_id) {
+                            $assignedIds = [$currentUser->category_target_id];
+                        }
+                        if (!empty($assignedIds) && !in_array($value, $assignedIds)) {
+                            $fail('The selected target category is not assigned to your profile.');
+                        }
+                    }
+                }
+            ],
             'status' => ['required', Rule::in(['new', 'contacted', 'in_progress', 'won', 'lost'])],
             'notes' => ['nullable', 'string'],
         ]);

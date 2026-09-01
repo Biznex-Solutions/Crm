@@ -186,9 +186,9 @@
                             </option>
                         @endforeach
                     </select>
-                    @if(Auth::user()->isEmployee() && Auth::user()->category_target_id)
+                    @if(Auth::user()->isEmployee() && (Auth::user()->categoryTargets()->exists() || Auth::user()->category_target_id))
                         <span style="font-size: 12px; color: var(--accent); margin-top: 5px; display: inline-flex; align-items: center; gap: 5px; font-weight: 600;">
-                            <i class="fa-solid fa-lock"></i> Assigned to your employee profile
+                            <i class="fa-solid fa-lock"></i> Assigned to your employee profile ({{ count($categories) }} {{ count($categories) === 1 ? 'category' : 'categories' }} available)
                         </span>
                     @endif
                     @error('category_target_id')

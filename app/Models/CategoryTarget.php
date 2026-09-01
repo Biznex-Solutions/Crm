@@ -37,7 +37,8 @@ class CategoryTarget extends Model
 
     public function users()
     {
-        return $this->hasMany(User::class, 'category_target_id');
+        return $this->belongsToMany(User::class, 'category_target_user');
     }
 }
+
 

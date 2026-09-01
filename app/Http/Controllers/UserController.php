@@ -27,7 +27,7 @@ class UserController extends Controller
         $status = $request->query('status');
 
         $users = User::query()
-            ->with('categoryTarget')
+            ->with(['categoryTarget', 'categoryTargets'])
             ->search($search)
             ->filterRole($role)
             ->filterStatus($status)
@@ -63,19 +63,20 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
             'role' => ['required', Rule::in(['admin', 'employee'])],
-            'category_target_id' => ['nullable', 'exists:category_targets,id'],
+            'category_target_ids' => ['nullable', 'array'],
+            'category_target_ids.*' => ['exists:category_targets,id'],
             'status' => ['required', Rule::in(['active', 'inactive'])],
             'phone' => ['nullable', 'string', 'max:30'],
             'designation' => ['nullable', 'string', 'max:255'],
         ]);
 
-        if ($validated['role'] === 'admin') {
-            $validated['category_target_id'] = null;
-        }
-
         $validated['password'] = Hash::make($validated['password']);
 
-        User::create($validated);
+        $user = User::create($validated);
+
+        if ($validated['role'] === 'employee' && !empty($request->category_target_ids)) {
+            $user->categoryTargets()->sync($request->category_target_ids);
+        }
 
         return redirect()->route('users.index')
             ->with('success', 'User "' . $validated['name'] . '" has been created successfully!');
@@ -85,6 +86,7 @@ class UserController extends Controller
     {
         $this->authorizeAdmin();
 
+        $user->load('categoryTargets');
         $categories = CategoryTarget::where('status', 'active')->orderBy('name')->get();
 
         return view('users.edit', compact('user', 'categories'));
@@ -99,15 +101,12 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'password' => ['nullable', 'string', 'min:6', 'confirmed'],
             'role' => ['required', Rule::in(['admin', 'employee'])],
-            'category_target_id' => ['nullable', 'exists:category_targets,id'],
+            'category_target_ids' => ['nullable', 'array'],
+            'category_target_ids.*' => ['exists:category_targets,id'],
             'status' => ['required', Rule::in(['active', 'inactive'])],
             'phone' => ['nullable', 'string', 'max:30'],
             'designation' => ['nullable', 'string', 'max:255'],
         ]);
-
-        if ($validated['role'] === 'admin') {
-            $validated['category_target_id'] = null;
-        }
 
         if (!empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
@@ -116,6 +115,12 @@ class UserController extends Controller
         }
 
         $user->update($validated);
+
+        if ($validated['role'] === 'employee') {
+            $user->categoryTargets()->sync($request->category_target_ids ?? []);
+        } else {
+            $user->categoryTargets()->detach();
+        }
 
         return redirect()->route('users.index')
             ->with('success', 'User details updated successfully!');

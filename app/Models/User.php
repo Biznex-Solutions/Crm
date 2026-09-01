@@ -79,6 +79,11 @@ class User extends Authenticatable
         return $this->belongsTo(CategoryTarget::class, 'category_target_id');
     }
 
+    public function categoryTargets()
+    {
+        return $this->belongsToMany(CategoryTarget::class, 'category_target_user');
+    }
+
     public function leads()
     {
         return $this->hasMany(Lead::class);

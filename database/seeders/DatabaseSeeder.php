@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\CategoryTarget;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -21,11 +22,13 @@ class DatabaseSeeder extends Seeder
             LeadSourceSeeder::class,
         ]);
 
-        $realEstate = \App\Models\CategoryTarget::where('name', 'Real Estate')->first();
-        $travel = \App\Models\CategoryTarget::where('name', 'Travel Companies')->first();
-        $hotels = \App\Models\CategoryTarget::where('name', 'Hotels & Restaurants')->first();
-        $construction = \App\Models\CategoryTarget::where('name', 'Construction')->first();
-        $marble = \App\Models\CategoryTarget::where('name', 'Marble & Granite')->first();
+        $realEstate = CategoryTarget::where('name', 'Real Estate')->first();
+        $travel = CategoryTarget::where('name', 'Travel Companies')->first();
+        $hotels = CategoryTarget::where('name', 'Hotels & Restaurants')->first();
+        $construction = CategoryTarget::where('name', 'Construction')->first();
+        $marble = CategoryTarget::where('name', 'Marble & Granite')->first();
+        $education = CategoryTarget::where('name', 'Education')->first();
+        $logistics = CategoryTarget::where('name', 'Import & Export Logistics')->first();
 
         // System Admin User
         User::create([
@@ -38,61 +41,61 @@ class DatabaseSeeder extends Seeder
             'designation' => 'System Administrator',
         ]);
 
-        // Requested Employee Users with assigned target categories
-        User::create([
+        // Requested Employee Users with multiple assigned target categories
+        $emp1 = User::create([
             'name' => 'Syeda Tehreema',
             'email' => 'tehreema@biznex.com',
             'password' => bcrypt('password'),
             'role' => 'employee',
-            'category_target_id' => $realEstate?->id,
             'status' => 'active',
             'phone' => '+92 300 1122334',
             'designation' => 'Senior Sales Consultant',
         ]);
+        $emp1->categoryTargets()->sync(array_filter([$realEstate?->id, $construction?->id]));
 
-        User::create([
+        $emp2 = User::create([
             'name' => 'Abrahim Daniyal',
             'email' => 'abrahim@biznex.com',
             'password' => bcrypt('password'),
             'role' => 'employee',
-            'category_target_id' => $travel?->id,
             'status' => 'active',
             'phone' => '+92 321 4455667',
             'designation' => 'Business Development Executive',
         ]);
+        $emp2->categoryTargets()->sync(array_filter([$travel?->id, $hotels?->id]));
 
-        User::create([
+        $emp3 = User::create([
             'name' => 'Muhammad Noman',
             'email' => 'noman@biznex.com',
             'password' => bcrypt('password'),
             'role' => 'employee',
-            'category_target_id' => $hotels?->id,
             'status' => 'active',
             'phone' => '+92 333 7788990',
             'designation' => 'Lead Acquisition Specialist',
         ]);
+        $emp3->categoryTargets()->sync(array_filter([$hotels?->id, $education?->id]));
 
-        User::create([
+        $emp4 = User::create([
             'name' => 'Subhan Abdullah',
             'email' => 'subhan@biznex.com',
             'password' => bcrypt('password'),
             'role' => 'employee',
-            'category_target_id' => $construction?->id,
             'status' => 'active',
             'phone' => '+92 312 9900112',
             'designation' => 'Account Executive',
         ]);
+        $emp4->categoryTargets()->sync(array_filter([$construction?->id, $realEstate?->id]));
 
-        User::create([
+        $emp5 = User::create([
             'name' => 'Abdul Rehman Alvi',
             'email' => 'abdulrehman@biznex.com',
             'password' => bcrypt('password'),
             'role' => 'employee',
-            'category_target_id' => $marble?->id,
             'status' => 'active',
             'phone' => '+92 345 2233445',
             'designation' => 'Client Relationship Manager',
         ]);
+        $emp5->categoryTargets()->sync(array_filter([$marble?->id, $logistics?->id]));
 
         // Call Lead Seeder
         $this->call([
