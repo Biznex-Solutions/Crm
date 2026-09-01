@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 60" width="170" height="60" fill="none">
+  <defs>
+    <linearGradient id="bar1Grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00C6FF"/>
+      <stop offset="100%" stop-color="#0072FF"/>
+    </linearGradient>
+    <linearGradient id="bar2Grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0072FF"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+    <linearGradient id="bar3Grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 3 Ascending Bars -->
+  <g transform="translate(10, 8)">
+    <!-- Bar 1 (Left) -->
+    <rect x="0" y="24" width="10" height="20" rx="3" fill="url(#bar1Grad)" />
+    
+    <!-- Bar 2 (Middle) -->
+    <rect x="14" y="14" width="10" height="30" rx="3" fill="url(#bar2Grad)" />
+    
+    <!-- Bar 3 (Right) -->
+    <rect x="28" y="4" width="10" height="40" rx="3" fill="url(#bar3Grad)" />
+  </g>
+
+  <!-- Biznex Brand Text -->
+  <text x="60" y="38" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-size="30" font-weight="800" fill="#0F172A" letter-spacing="-0.5">Biznex</text>
+</svg>
