@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Biznex CRM') — Business Command Center</title>
-    <meta name="description" content="Biznex CRM — Intelligent Lead & Sales Management Platform">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/favicon.svg') }}">
+    <link rel="alternate icon" href="{{ asset('favicon.ico') }}">
 
     <!-- Google Fonts: Inter + Bricolage Grotesque -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1042,6 +1044,119 @@
             .dash-banner .banner-text h2 { font-size: 18px; }
             .banner-actions { width: 100%; }
             .banner-btn-white, .banner-btn-ghost { flex: 1; justify-content: center; }
+        }
+
+        /* ===== PAGINATION STYLES ===== */
+        nav[role="navigation"] svg,
+        .pagination svg,
+        .w-5,
+        .h-5 {
+            width: 16px !important;
+            height: 16px !important;
+            max-width: 16px !important;
+            max-height: 16px !important;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .biznex-pagination-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 4px 0;
+            width: 100%;
+        }
+
+        .biznex-pagination-info {
+            font-size: 13px;
+            color: var(--text-300);
+            font-weight: 500;
+        }
+
+        .biznex-pagination-info .font-semibold {
+            color: var(--text-100);
+            font-weight: 700;
+        }
+
+        .biznex-pagination {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+
+        .biznex-pagination .page-item {
+            margin: 0;
+        }
+
+        .biznex-pagination .page-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-200);
+            text-decoration: none;
+            transition: all 0.15s ease;
+            box-sizing: border-box;
+        }
+
+        .biznex-pagination .page-link:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-soft);
+            transform: translateY(-1px);
+        }
+
+        .biznex-pagination .page-item.active .page-link {
+            background: var(--grad-brand);
+            color: #ffffff !important;
+            border-color: transparent;
+            box-shadow: 0 3px 10px var(--accent-glow);
+            cursor: default;
+            transform: none;
+        }
+
+        .biznex-pagination .page-item.disabled .page-link {
+            opacity: 0.45;
+            cursor: not-allowed;
+            background: var(--bg-base);
+            border-color: var(--border);
+            color: var(--text-300);
+            pointer-events: none;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .biznex-pagination .page-link.dots {
+            border: none;
+            background: transparent;
+            min-width: 24px;
+            color: var(--text-300);
+            cursor: default;
+        }
+
+        @media (max-width: 640px) {
+            .biznex-pagination-wrap {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+                text-align: center;
+            }
+            .biznex-pagination {
+                justify-content: center;
+            }
         }
     </style>
 

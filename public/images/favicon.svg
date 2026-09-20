@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <defs>
+    <linearGradient id="favBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="bar1Grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00C6FF"/>
+      <stop offset="100%" stop-color="#0072FF"/>
+    </linearGradient>
+    <linearGradient id="bar2Grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0072FF"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+    <linearGradient id="bar3Grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#4F46E5" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Background container for high visibility on both light & dark browser tabs -->
+  <rect width="64" height="64" rx="14" fill="url(#favBg)"/>
+  <rect width="62" height="62" x="1" y="1" rx="13" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+
+  <!-- 3 Ascending Growth Bars -->
+  <g filter="url(#glow)">
+    <!-- Bar 1 (Left) -->
+    <rect x="11" y="32" width="10" height="20" rx="3.5" fill="url(#bar1Grad)"/>
+    
+    <!-- Bar 2 (Middle) -->
+    <rect x="25" y="21" width="10" height="31" rx="3.5" fill="url(#bar2Grad)"/>
+    
+    <!-- Bar 3 (Right) -->
+    <rect x="39" y="10" width="10" height="42" rx="3.5" fill="url(#bar3Grad)"/>
+  </g>
+</svg>

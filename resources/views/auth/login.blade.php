@@ -6,6 +6,10 @@
     <title>Sign In — Biznex CRM</title>
     <meta name="description" content="Sign in to Biznex CRM - Your Intelligent Lead Management Command Center">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/favicon.svg') }}">
+    <link rel="alternate icon" href="{{ asset('favicon.ico') }}">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
