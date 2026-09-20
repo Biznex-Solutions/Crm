@@ -193,6 +193,30 @@
             transition: color 0.15s;
         }
 
+        .input-wrap .toggle-pwd {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #A0AFCA;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.18s ease;
+            line-height: 1;
+        }
+
+        .input-wrap .toggle-pwd:hover {
+            color: var(--accent);
+            background: rgba(61, 90, 254, 0.08);
+        }
+
         .f-input {
             width: 100%;
             padding: 13px 16px 13px 44px;
@@ -204,6 +228,10 @@
             background: #FAFBFF;
             outline: none;
             transition: all 0.2s;
+        }
+
+        .f-input.has-toggle {
+            padding-right: 48px;
         }
 
         .f-input:focus {
@@ -372,8 +400,11 @@
                 <div class="form-grp">
                     <label class="form-lbl" for="password">Password</label>
                     <div class="input-wrap">
-                        <input type="password" id="password" name="password" class="f-input" placeholder="••••••••" required>
+                        <input type="password" id="password" name="password" class="f-input has-toggle" placeholder="••••••••" required>
                         <i class="fa-solid fa-lock i-icon"></i>
+                        <button type="button" class="toggle-pwd" id="togglePasswordBtn" aria-label="Toggle password visibility" onclick="togglePasswordVisibility()">
+                            <i class="fa-regular fa-eye" id="togglePasswordIcon"></i>
+                        </button>
                     </div>
                     @error('password')
                         <div class="field-err">
@@ -395,5 +426,20 @@
         </div>
     </div>
 
+    <script>
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const icon = document.getElementById('togglePasswordIcon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </body>
 </html>
