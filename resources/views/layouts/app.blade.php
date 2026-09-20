@@ -1031,17 +1031,18 @@
             .stat-ic { width: 42px; height: 42px; font-size: 17px; border-radius: 12px; }
             .stat-data h3 { font-size: 22px; }
 
-            .content-area { padding: 12px; }
+            .content-area { padding: 10px; }
 
-            .topbar { height: 60px; }
-            .topbar-left h1 { font-size: 15px; }
+            .topbar { height: 56px; padding: 0 12px; gap: 8px; }
+            .topbar-left { min-width: 0; flex: 1; }
+            .topbar-left h1 { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
             /* Buttons text label hidden on xs */
             .btn-sm span { display: inline; }
 
             /* Banner responsive */
-            .dash-banner { padding: 20px; }
-            .dash-banner .banner-text h2 { font-size: 18px; }
+            .dash-banner { padding: 18px; }
+            .dash-banner .banner-text h2 { font-size: 17px; }
             .banner-actions { width: 100%; }
             .banner-btn-white, .banner-btn-ghost { flex: 1; justify-content: center; }
         }
